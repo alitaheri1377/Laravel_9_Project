@@ -2,6 +2,11 @@
 
 @section('content')
     <div class="main-content mt-5">
+        @if($errors->any())
+            @foreach($errors->all() as $error)
+                <div class="alert alert-danger">{{$error}}</div>
+            @endforeach
+        @endif
         <div class="card">
             <div class="card-header">
                 <div class="row">
@@ -14,27 +19,28 @@
                 </div>
             </div>
             <div class="card-body">
-                <form action="">
+                <form action="{{ route('posts.store') }}" method="post" enctype="multipart/form-data">
+                    @csrf
                     <div class="form-group">
                         <label for="" class="form-label">Image</label>
-                        <input type="file" class="form-control">
+                        <input type="file" class="form-control" name="image">
                     </div>
                     <div class="form-group">
                         <label for="" class="form-label">Title</label>
-                        <input type="text" class="form-control">
+                        <input type="text" class="form-control" name="title">
                     </div>
                     <div class="form-group">
                         <label for="" class="form-label">Category</label>
-                        <select class="form-control">
-                            <option value="">test1</option>
-                            <option value="">test2</option>
-                            <option value="">test3</option>
-                            <option value="">test4</option>
+                        <select class="form-control" name="category_id">
+                            <option value="">Select</option>
+                            @foreach($categories as $category)
+                                <option value="{{$category->id}}">{{$category->name}}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="" class="form-label">Description</label>
-                        <textarea cols="30" rows="10" class="form-control"></textarea>
+                        <textarea cols="30" rows="10" class="form-control" name="description"></textarea>
                     </div>
                     <div class="form-group mt-3">
                         <button class="btn btn-primary">Submit</button>
