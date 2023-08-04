@@ -64,7 +64,8 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        //
+        $post = Post::findOrFail($id);
+        return view('show',compact('post'));
     }
 
     /**
@@ -119,6 +120,14 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $post = Post::findOrFail($id);
+        $post->delete();
+        return redirect()->route('posts.index');
+    }
+
+    public function trashed()
+    {
+        $posts = Post::onlyTrashed()->get();
+        return view('trashed',compact('posts'));
     }
 }

@@ -9,7 +9,7 @@
                         <h4>Trashed Posts</h4>
                     </div>
                     <div class="col-md-6 d-flex justify-content-end">
-                        <a class="btn btn-success mx-1" href="#">Back</a>
+                        <a class="btn btn-success mx-1" href="{{route('posts.index')}}">Back</a>
                     </div>
                 </div>
             </div>
@@ -27,21 +27,28 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>
-                            <img src="https://picsum.photos/200" width="80">
-                        </td>
-                        <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</td>
-                        <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Egestas purus viverra accumsan in nisl nisi. Arcu cursus vitae congue mauris rhoncus aenean vel elit scelerisque. In egestas erat imperdiet sed euismod nisi porta lorem mollis. Morbi tristique senectus et netus.</td>
-                        <td>News</td>
-                        <td>2-5-23</td>
-                        <td>
-                            <a class="btn-sm btn-success btn" href="#">Show</a>
-                            <a class="btn-sm btn-primary btn" href="#">Edit</a>
-                            <a class="btn-sm btn-danger btn" href="#">Delete</a>
-                        </td>
-                    </tr>
+                    @foreach($posts as $post)
+                        <tr>
+                            <th scope="row">{{$post->id}}</th>
+                            <td>
+                                <img src="{{asset($post->image)}}" width="80">
+                            </td>
+                            <td>{{$post->title}}</td>
+                            <td>{{$post->description}}</td>
+                            <td>{{$post->category->name}}</td>
+                            <td>{{date('d-m-Y',strtotime($post->created_at))}}</td>
+                            <td>
+                                <a class="btn-sm btn-success btn" href="{{route('posts.show', $post->id)}}">Show</a>
+                                <a class="btn-sm btn-primary btn" href="{{route('posts.edit', $post->id)}}">Edit</a>
+                                {{--                                <a class="btn-sm btn-danger btn" href="#">Delete</a>--}}
+                                <form action="{{route('posts.destroy', $post->id)}}" method="post" class="mt-1">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn-sm btn-danger btn">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
                     </tbody>
                 </table>
             </div>
