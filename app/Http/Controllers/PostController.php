@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Post;
+use Illuminate\Support\Facades\File;
 
 class PostController extends Controller
 {
@@ -15,7 +16,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        return view('index');
+        $posts = Post::all();
+        return view('index', compact('posts'));
     }
 
     /**
@@ -47,7 +49,7 @@ class PostController extends Controller
         $filePath = $request->image->storeAs('uploads', $fileName);
         $post = new Post();
         $post->title = $request->title;
-        $post->image = $filePath;
+        $post->image = 'storage/'.$filePath;
         $post->category_id = $request->category_id;
         $post->description = $request->description;
         $post->save();
@@ -73,7 +75,9 @@ class PostController extends Controller
      */
     public function edit($id)
     {
-        //
+        $post = Post::findOrFail($id);
+        $categories = Category::all();
+        return view('edit', compact('post','categories'));
     }
 
     /**
@@ -85,7 +89,26 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'title' => ['required', 'max:255'],
+            'category_id' => ['required', 'integer'],
+            'description' => ['required']
+        ]);
+        $post = Post::findOrFail($id);
+        if ($request->hasFile('image')) {
+            $request->validate([
+                'image' => ['required', 'max:2028', 'image']
+            ]);
+            $fileName = time().'_'.$request->image->getClientOriginalName();
+            $filePath = $request->image->storeAs('uploads', $fileName);
+            File::delete(public_path($post->image));
+            $post->image = 'storage/'.$filePath;
+        }
+        $post->title = $request->title;
+        $post->category_id = $request->category_id;
+        $post->description = $request->description;
+        $post->save();
+        return redirect()->route('posts.index');
     }
 
     /**
