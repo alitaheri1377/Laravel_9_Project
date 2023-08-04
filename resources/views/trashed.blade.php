@@ -38,19 +38,20 @@
                             <td>{{$post->category->name}}</td>
                             <td>{{date('d-m-Y',strtotime($post->created_at))}}</td>
                             <td>
-                                <a class="btn-sm btn-success btn" href="{{route('posts.show', $post->id)}}">Show</a>
-                                <a class="btn-sm btn-primary btn" href="{{route('posts.edit', $post->id)}}">Edit</a>
-                                {{--                                <a class="btn-sm btn-danger btn" href="#">Delete</a>--}}
-                                <form action="{{route('posts.destroy', $post->id)}}" method="post" class="mt-1">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn-sm btn-danger btn">Delete</button>
-                                </form>
+                                <div class="d-flex">
+                                    <a class="btn-sm btn-success btn mx-1" href="{{route('posts.restore', $post->id)}}">Restore</a>
+                                    <form action="{{route('posts.force_delete', $post->id)}}" class="mx-1" method="post">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn-sm btn-danger btn">Delete</button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                     @endforeach
                     </tbody>
                 </table>
+                {{$posts->links()}}
             </div>
         </div>
     </div>
