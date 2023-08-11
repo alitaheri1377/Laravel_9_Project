@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\File;
 
 class PostController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('authCheck2')->except(['index','show']);
+    }
+
     /**
      * Display a listing of the resource.
      *
